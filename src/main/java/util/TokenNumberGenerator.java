@@ -1,3 +1,3 @@
-class public DemoApplication {
+class public TokenNumberGenerator {
 
 }
