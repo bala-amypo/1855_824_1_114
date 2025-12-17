@@ -1,3 +1,3 @@
-class public  {
+class public AuthRequest {
 
 }
