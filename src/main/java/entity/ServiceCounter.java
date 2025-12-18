@@ -1,58 +1,40 @@
-package com.example.demo.config;
+package com.example.demo.controller;
 
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.example.demo.entity.ServiceCounter;
+import com.example.demo.service.ServiceCounterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.*;
 
 
-@Configuration
-public class SecurityConfig {
+import java.util.List;
 
 
-private final JwtAuthenticationFilter jwtAuthenticationFilter;
-private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+@RestController
+@RequestMapping("/counters")
+@Tag(name = "Service Counters")
+public class ServiceCounterController {
 
 
-public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-JwtAuthenticationEntryPoint authenticationEntryPoint) {
-this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-this.authenticationEntryPoint = authenticationEntryPoint;
+private final ServiceCounterService counterService;
+
+
+public ServiceCounterController(ServiceCounterService counterService) {
+this.counterService = counterService;
 }
 
 
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-http
-.csrf(csrf -> csrf.disable())
-.exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
-.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-.authorizeHttpRequests(auth -> auth
-.requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-.anyRequest().authenticated()
-);
-
-
-http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-return http.build();
+@PostMapping
+@Operation(summary = "Add new service counter")
+public ServiceCounter addCounter(@RequestBody ServiceCounter counter) {
+return counterService.addCounter(counter);
 }
 
 
-@Bean
-public PasswordEncoder passwordEncoder() {
-return new BCryptPasswordEncoder();
-}
-
-
-@Bean
-public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-return config.getAuthenticationManager();
+@GetMapping("/active")
+@Operation(summary = "Get all active counters")
+public List<ServiceCounter> getActiveCounters() {
+return counterService.getActiveCounters();
 }
 }
