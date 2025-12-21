@@ -1,32 +1,31 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
-import com.example.demo.service.UserService;
+import com.example.demo.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService service;
+    private final UserRepository userRepository;
 
-    public AuthController(UserService service) {
-        this.service = service;
+    public AuthController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     public User register(@RequestBody User user) {
-        return service.register(user);
+        return userRepository.save(user);
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody LoginRequest req) {
-        User user = service.findByEmail(req.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!user.getPassword().equals(req.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-        return user;
+    public String login(@RequestBody User user) {
+        return userRepository.findByEmail(user.getEmail())
+                .filter(u -> u.getPassword().equals(user.getPassword()))
+                .map(u -> "LOGIN_SUCCESS")
+                .orElse("INVALID_CREDENTIALS");
     }
 }
