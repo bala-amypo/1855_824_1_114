@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.ServiceCounter;
+import com.example.demo.model.ServiceCounter;
 import com.example.demo.service.ServiceCounterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
