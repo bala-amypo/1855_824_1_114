@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class ServiceCounterServiceImpl implements ServiceCounterService {
 
-    private final ServiceCounterRepository serviceCounterRepository;
+    private final ServiceCounterRepository serviceCounterRepository; // (ServiceCounterRepository)
 
     public ServiceCounterServiceImpl(ServiceCounterRepository serviceCounterRepository) {
         this.serviceCounterRepository = serviceCounterRepository;
@@ -18,6 +18,7 @@ public class ServiceCounterServiceImpl implements ServiceCounterService {
 
     @Override
     public ServiceCounter addCounter(ServiceCounter counter) {
+        if (counter.getIsActive() == null) counter.setIsActive(Boolean.TRUE);
         return serviceCounterRepository.save(counter);
     }
 

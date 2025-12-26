@@ -5,24 +5,26 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository; // (UserRepository)
 
-    public UserServiceImpl(UserRepository repo) {
-        this.repo = repo;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public User register(User user) {
-        return repo.save(user);
+        User existing = userRepository.findByEmail(user.getEmail());
+        if (existing != null) {
+            throw new IllegalStateException("Email already exists");
+        }
+        return userRepository.save(user);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return repo.findByEmail(email);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
