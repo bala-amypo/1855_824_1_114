@@ -16,10 +16,16 @@ public class TokenLog implements Serializable {
 
     private String logMessage;
 
-    // ✅ test expects new TokenLog().getLoggedAt() != null
-    private LocalDateTime loggedAt = LocalDateTime.now();
+    private LocalDateTime loggedAt;
 
-    public TokenLog() {}
+    public TokenLog() {
+        this.loggedAt = LocalDateTime.now(); // required for your test
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (loggedAt == null) loggedAt = LocalDateTime.now();
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

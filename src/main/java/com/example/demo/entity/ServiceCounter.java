@@ -13,8 +13,7 @@ public class ServiceCounter implements Serializable {
     private String counterName;
     private String department;
 
-    // ✅ test expects new ServiceCounter().getIsActive() == true
-    private Boolean isActive = true;
+    private Boolean isActive = true; // default true for test
 
     public ServiceCounter() {}
 
