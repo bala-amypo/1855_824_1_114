@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -16,12 +16,8 @@ public class TokenLog implements Serializable {
 
     private String logMessage;
 
-    private LocalDateTime loggedAt;
-
-    @PrePersist
-    public void prePersist() {
-        if (loggedAt == null) loggedAt = LocalDateTime.now();
-    }
+    // ✅ test expects new TokenLog().getLoggedAt() != null
+    private LocalDateTime loggedAt = LocalDateTime.now();
 
     public TokenLog() {}
 

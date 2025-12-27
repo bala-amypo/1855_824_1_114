@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -13,7 +13,8 @@ public class ServiceCounter implements Serializable {
     private String counterName;
     private String department;
 
-    private Boolean isActive;
+    // ✅ test expects new ServiceCounter().getIsActive() == true
+    private Boolean isActive = true;
 
     public ServiceCounter() {}
 
