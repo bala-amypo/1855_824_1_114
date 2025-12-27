@@ -1,61 +1,51 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.JwtTokenProvider;
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.dto.*;
 import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.demo.service.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
-@Tag(name = "AuthController")
+@RequestMapping("/api/auth")
 public class AuthController {
-
-    private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public AuthController(UserService userService, JwtTokenProvider jwtTokenProvider) {
-        this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
+    
+    @Autowired
+    private UserServiceImpl userService;
+    
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    
     @PostMapping("/register")
-    @Operation(summary = "Register user")
-    public User register(@RequestBody RegisterRequest request) {
-        User u = new User();
-        u.setName(request.getName());
-        u.setEmail(request.getEmail());
-
-        // store password as plain text because BCrypt dependency is missing
-        u.setPassword(request.getPassword());
-
-        u.setRole((request.getRole() == null || request.getRole().isBlank())
-                ? "STAFF"
-                : request.getRole().toUpperCase());
-
-        return userService.register(u);
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        
+        User created = userService.register(user);
+        String token = jwtTokenProvider.generateToken(created.getId(), created.getEmail(), created.getRole());
+        
+        AuthResponse response = new AuthResponse();
+        response.setToken(token);
+        response.setEmail(created.getEmail());
+        
+        return ResponseEntity.ok(response);
     }
-
+    
     @PostMapping("/login")
-    @Operation(summary = "Login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         User user = userService.findByEmail(request.getEmail());
-        if (user == null) {
-            // must contain "not found"
-            throw new ResourceNotFoundException("User not found");
+        if (user != null) {
+            String token = jwtTokenProvider.generateToken(user.getId(), user.getEmail(), user.getRole());
+            
+            AuthResponse response = new AuthResponse();
+            response.setToken(token);
+            response.setEmail(user.getEmail());
+            
+            return ResponseEntity.ok(response);
         }
-
-        // plain check
-        if (user.getPassword() == null || !user.getPassword().equals(request.getPassword())) {
-            throw new IllegalStateException("Invalid credentials");
-        }
-
-        String token = jwtTokenProvider.generateToken(user.getId(), user.getEmail(), user.getRole());
-        return new AuthResponse(token);
+        return ResponseEntity.badRequest().build();
     }
 }

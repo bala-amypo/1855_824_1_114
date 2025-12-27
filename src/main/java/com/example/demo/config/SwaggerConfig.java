@@ -1,42 +1,38 @@
 package com.example.demo.config;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.servers.Server;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 @Configuration
-public class SwaggerConfig {
+@EnableWebSecurity
+public class SecurityConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // JWT Security Scheme
-        SecurityScheme securityScheme = new SecurityScheme()
-                .name("Authorization")
-                .type(SecurityScheme.Type.HTTP)
-                .scheme("bearer")
-                .bearerFormat("JWT")
-                .in(SecurityScheme.In.HEADER);
+        http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/auth/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults());
 
-        // Apply JWT globally
-        SecurityRequirement securityRequirement = new SecurityRequirement()
-                .addList("Bearer Authentication");
-
-        return new OpenAPI()
-                // Server with port number
-                .servers(List.of(
-                        new Server().url("https://9152.pro604cr.amypo.ai/")
-                ))
-                // Swagger Authorize button
-                .components(new Components()
-                        .addSecuritySchemes("Bearer Authentication", securityScheme)
-                )
-                .addSecurityItem(securityRequirement);
+        return http.build();
     }
 }
+
+
+
