@@ -1,9 +1,7 @@
 package com.example.demo.util;
 
-import java.util.UUID;
-
 public class TokenNumberGenerator {
-    public static String generate() {
-        return "T-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10).toUpperCase();
+    public static String generate(String prefix) {
+        return prefix + "-" + System.currentTimeMillis() % 1000;
     }
 }

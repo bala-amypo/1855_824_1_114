@@ -4,6 +4,6 @@ import com.example.demo.entity.Token;
 
 public interface TokenService {
     Token issueToken(Long counterId);
-    Token updateStatus(Long tokenId, String status);
+    Token updateStatus(Long tokenId, String newStatus);
     Token getToken(Long tokenId);
 }
