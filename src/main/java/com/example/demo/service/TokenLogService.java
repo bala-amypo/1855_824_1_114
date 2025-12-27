@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.model.TokenLog;
+import com.example.demo.entity.TokenLog;
 
 import java.util.List;
 

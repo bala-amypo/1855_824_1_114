@@ -1,6 +1,6 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.TokenLog;
+import com.example.demo.entity.TokenLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
