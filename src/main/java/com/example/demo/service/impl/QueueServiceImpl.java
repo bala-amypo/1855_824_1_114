@@ -33,11 +33,9 @@ public class QueueServiceImpl implements QueueService {
         return queueRepo.save(qp);
     }
 
-    // ✅ REQUIRED by interface
     @Override
-    public Integer getPosition(Long tokenId) {
-        QueuePosition qp = queueRepo.findByToken_Id(tokenId)
+    public QueuePosition getPosition(Long tokenId) {
+        return queueRepo.findByToken_Id(tokenId)
                 .orElseThrow(() -> new ResourceNotFoundException("Queue position not found"));
-        return qp.getPosition();
     }
 }
