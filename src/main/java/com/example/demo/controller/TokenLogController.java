@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.TokenLog;
+import com.example.demo.entity.TokenLog;
 import com.example.demo.service.TokenLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

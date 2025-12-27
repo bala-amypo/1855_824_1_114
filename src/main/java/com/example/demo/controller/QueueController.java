@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.QueuePosition;
+import com.example.demo.entity.QueuePosition;
 import com.example.demo.service.QueueService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
