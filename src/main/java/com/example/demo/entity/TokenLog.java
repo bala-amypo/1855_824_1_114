@@ -1,41 +1,65 @@
+// package com.example.demo.entity;
+
+// import java.time.LocalDateTime;
+
+// import jakarta.persistence.*;
+
+// @Entity
+// @Table(name = "token_logs")
+// public class TokenLog {
+
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//     private Long id;
+
+//     private String logMessage;
+
+//     @ManyToOne
+//     private BreachAlert token;
+
+//     private LocalDateTime loggedAt;
+
+//     @PrePersist
+//     void onCreate() {
+//         loggedAt = LocalDateTime.now();
+//     }
+// }
+
+
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-public class TokenLog implements Serializable {
-
+@Table(name = "token_logs")
+public class TokenLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(optional = false)
+    
+    @ManyToOne
+    @JoinColumn(name = "token_id")
     private Token token;
+    
+    private String message;
+    private LocalDateTime loggedAt = LocalDateTime.now();
+private String status;   // ✅ ADD THIS
 
-    private String logMessage;
-
-    private LocalDateTime loggedAt;
-
-    public TokenLog() {
-        this.loggedAt = LocalDateTime.now(); // required for your test
+    // getters & setters
+    public String getStatus() {
+        return status;
     }
 
-    @PrePersist
-    public void prePersist() {
-        if (loggedAt == null) loggedAt = LocalDateTime.now();
+    public void setStatus(String status) {
+        this.status = status;
     }
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
     public Token getToken() { return token; }
     public void setToken(Token token) { this.token = token; }
-
-    public String getLogMessage() { return logMessage; }
-    public void setLogMessage(String logMessage) { this.logMessage = logMessage; }
-
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
     public LocalDateTime getLoggedAt() { return loggedAt; }
     public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
 }
