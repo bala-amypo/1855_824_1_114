@@ -5,27 +5,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-@Component
 public class JwtTokenProvider {
 
     private final Key key;
     private final long validityMs;
 
-    public JwtTokenProvider(
-            @Value("${app.jwt.secret:ChangeThisSecretKeyReplaceMe1234567890}") String secret,
-            @Value("${app.jwt.expiration-ms:3600000}") long validityMs
-    ) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.validityMs = validityMs;
-    }
-
+    // ✅ ONLY constructor (tests need this exact signature)
     public JwtTokenProvider(String secret, long validityMs) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.validityMs = validityMs;
