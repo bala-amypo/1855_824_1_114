@@ -16,7 +16,6 @@ public class TokenLog {
     
     private String logMessage;
     
-    // FIX: Init immediately
     private LocalDateTime loggedAt = LocalDateTime.now();
     
     @PrePersist

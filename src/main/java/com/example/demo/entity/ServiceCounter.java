@@ -12,5 +12,5 @@ public class ServiceCounter {
     
     private String counterName;
     private String department;
-    private Boolean isActive = true; // Default to true per tests
+    private Boolean isActive = true;
 }

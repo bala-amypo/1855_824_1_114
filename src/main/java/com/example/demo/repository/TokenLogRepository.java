@@ -1,9 +1,9 @@
 package com.example.demo.repository;
-import com.example.demo.entity.QueuePosition;
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
 
-public interface QueuePositionRepository extends JpaRepository<QueuePosition, Long> {
-    // This method was missing and causing compilation failure
-    Optional<QueuePosition> findByToken_Id(Long tokenId);
+import com.example.demo.entity.TokenLog;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+
+public interface TokenLogRepository extends JpaRepository<TokenLog, Long> {
+    List<TokenLog> findByToken_IdOrderByLoggedAtAsc(Long tokenId);
 }
