@@ -1,33 +1,19 @@
-// package com.example.demo.controller;
+package com.example.demo.controller;
+import com.example.demo.entity.ServiceCounter;
+import com.example.demo.service.ServiceCounterService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
-// import com.example.demo.entity.ServiceCounter;
-// import com.example.demo.service.ServiceCounterService;
-// import io.swagger.v3.oas.annotations.Operation;
-// import io.swagger.v3.oas.annotations.tags.Tag;
-// import org.springframework.web.bind.annotation.*;
+@RestController
+@RequestMapping("/counters")
+@RequiredArgsConstructor
+public class ServiceCounterController {
+    private final ServiceCounterService service;
 
-// import java.util.List;
+    @PostMapping
+    public ServiceCounter addCounter(@RequestBody ServiceCounter sc) { return service.addCounter(sc); }
 
-// @RestController
-// @RequestMapping("/counters")
-// @Tag(name = "ServiceCounterController")
-// public class ServiceCounterController {
-
-//     private final ServiceCounterService service;
-
-//     public ServiceCounterController(ServiceCounterService service) {
-//         this.service = service;
-//     }
-
-//     @PostMapping("/")
-//     @Operation(summary = "Add counter")
-//     public ServiceCounter addCounter(@RequestBody ServiceCounter counter) {
-//         return service.addCounter(counter);
-//     }
-
-//     @GetMapping("/active")
-//     @Operation(summary = "List active counters")
-//     public List<ServiceCounter> getActiveCounters() {
-//         return service.getActiveCounters();
-//     }
-// }
+    @GetMapping("/active")
+    public List<ServiceCounter> getActive() { return service.getActiveCounters(); }
+}
