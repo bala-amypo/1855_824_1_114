@@ -15,7 +15,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public QueuePosition updateQueuePosition(Long tokenId, Integer pos) {
-        // Fixed: Validation required by test t68
+        // FIX: Validation logic required by test t68
         if (pos == null || pos < 1) {
             throw new IllegalArgumentException("Position must be at least 1");
         }
