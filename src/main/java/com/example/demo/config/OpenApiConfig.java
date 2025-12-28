@@ -19,7 +19,7 @@ public class OpenApiConfig {
                         .version("1.0")
                         .description("Demo Spring Boot API"))
                 .servers(List.of(
-                        new Server().url("https://9067.408procr.amypo.ai/")
+                        new Server().url("https://9059.32procr.amypo.ai/")
                 ));
     }
 }
