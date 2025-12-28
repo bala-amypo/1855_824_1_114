@@ -13,4 +13,7 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
+    
+    // FIX: This field was missing, causing the AuthController error
+    private String role;
 }
