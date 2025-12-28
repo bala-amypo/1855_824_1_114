@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface QueuePositionRepository extends JpaRepository<QueuePosition, Long> {
-    // FIX: Added this method required by the tests
+    // FIX: Required by QueueServiceImpl
     Optional<QueuePosition> findByToken_Id(Long tokenId);
 }

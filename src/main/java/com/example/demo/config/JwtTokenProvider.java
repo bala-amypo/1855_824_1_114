@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
@@ -24,9 +23,9 @@ public class JwtTokenProvider {
 
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
-                // FIX: Test t54 expects Subject to be the User ID
-                .setSubject(String.valueOf(userId)) 
-                // FIX: Test t46 expects Email as a specific claim
+                // FIX: Test t54 requires the Subject to be the User ID
+                .setSubject(String.valueOf(userId))
+                // FIX: Test t46 requires these specific claims
                 .claim("email", email)
                 .claim("role", role)
                 .claim("userId", userId)
