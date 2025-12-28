@@ -15,7 +15,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public QueuePosition updateQueuePosition(Long tokenId, Integer pos) {
-        // FIX: Null check and Range Check (Fixes 't67' and 't68')
+        // CRITICAL FIX: This validation was missing in your old code (Test t68)
         if (pos == null || pos < 1) {
             throw new IllegalArgumentException("Position must be at least 1");
         }
@@ -29,7 +29,7 @@ public class QueueServiceImpl implements QueueService {
         qp.setToken(t);
         qp.setPosition(pos);
         
-        // FIX: Returns the saved object (Fixes 't23')
+        // Fix: Return the saved object
         return queueRepo.save(qp);
     }
 

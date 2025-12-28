@@ -18,7 +18,7 @@ public class Token {
     @ManyToOne
     private ServiceCounter serviceCounter;
     
-    // FIX: Init immediately to prevent NPEs in 't12', 't16', 't66'
+    // CRITICAL FIX: Init immediately. Tests use 'new Token()' and skip @PrePersist.
     private LocalDateTime issuedAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 
