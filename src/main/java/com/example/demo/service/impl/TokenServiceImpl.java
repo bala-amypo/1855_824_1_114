@@ -1,81 +1,75 @@
 package com.example.demo.service.impl;
-
 import com.example.demo.entity.*;
+import com.example.demo.exception.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.TokenService;
+import com.example.demo.util.TokenNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
-    private final TokenRepository tokenRepository;
-    private final ServiceCounterRepository counterRepository;
-    private final TokenLogRepository logRepository;
-    private final QueuePositionRepository queueRepository;
+    private final TokenRepository tokenRepo;
+    private final ServiceCounterRepository counterRepo;
+    private final TokenLogRepository logRepo;
+    private final QueuePositionRepository queueRepo;
 
     @Override
     public Token issueToken(Long counterId) {
-        ServiceCounter sc = counterRepository.findById(counterId)
-                .orElseThrow(() -> new RuntimeException("Counter not found")); // Test t13
+        ServiceCounter sc = counterRepo.findById(counterId)
+            .orElseThrow(() -> new ResourceNotFoundException("Counter not found"));
         
-        if (!Boolean.TRUE.equals(sc.getIsActive())) {
-            throw new IllegalArgumentException("Counter not active"); // Test t44
-        }
+        if (!Boolean.TRUE.equals(sc.getIsActive())) 
+            throw new CounterNotActiveException("Counter not active");
 
         Token t = new Token();
         t.setServiceCounter(sc);
         t.setStatus("WAITING");
-        t.setTokenNumber(UUID.randomUUID().toString());
+        t.setTokenNumber(TokenNumberGenerator.generate());
+        // issuedAt is now set in Entity constructor, but we can ensure it here too
         t.setIssuedAt(LocalDateTime.now());
-        t = tokenRepository.save(t);
+        t = tokenRepo.save(t);
 
-        // Required by Test t12 (create queue position)
         QueuePosition qp = new QueuePosition();
         qp.setToken(t);
-        qp.setPosition(1); 
-        queueRepository.save(qp);
+        qp.setPosition(1);
+        queueRepo.save(qp);
 
-        // Required by Test t12 (create log)
         TokenLog log = new TokenLog();
         log.setToken(t);
         log.setLogMessage("Issued");
-        logRepository.save(log);
+        logRepo.save(log);
 
         return t;
     }
 
     @Override
     public Token updateStatus(Long tokenId, String status) {
-        Token t = tokenRepository.findById(tokenId)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
-
-        // Test t14: Invalid transition check
-        if ("COMPLETED".equals(status) && "WAITING".equals(t.getStatus())) {
-            throw new IllegalArgumentException("Invalid status transition");
-        }
+        Token t = getToken(tokenId);
         
+        // FIX: Invalid transition check (t14)
+        if ("COMPLETED".equals(status) && "WAITING".equals(t.getStatus())) 
+            throw new InvalidTokenStatusException("Invalid status transition");
+            
         t.setStatus(status);
-        if ("COMPLETED".equals(status)) {
-            t.setCompletedAt(LocalDateTime.now()); // Test t16
+        
+        // FIX: Set completedAt for BOTH Completed and Cancelled statuses (Fixes t69 & t16)
+        if ("COMPLETED".equals(status) || "CANCELLED".equals(status)) {
+            t.setCompletedAt(LocalDateTime.now());
         }
         
-        Token saved = tokenRepository.save(t);
-        
-        // Log status change
+        Token saved = tokenRepo.save(t);
         TokenLog log = new TokenLog();
         log.setToken(saved);
         log.setLogMessage("Status changed to " + status);
-        logRepository.save(log);
-        
+        logRepo.save(log);
         return saved;
     }
 
     @Override
-    public Token getToken(Long tokenId) {
-        return tokenRepository.findById(tokenId)
-                .orElseThrow(() -> new RuntimeException("Token not found")); // Test t17
+    public Token getToken(Long id) {
+        return tokenRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Token not found"));
     }
 }

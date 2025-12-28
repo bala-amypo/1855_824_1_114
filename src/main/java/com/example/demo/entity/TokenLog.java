@@ -1,5 +1,4 @@
 package com.example.demo.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -15,10 +14,12 @@ public class TokenLog {
     private Token token;
     
     private String logMessage;
-    private LocalDateTime loggedAt;
+    
+    // FIX: Initialize immediately so it works in unit tests (t30)
+    private LocalDateTime loggedAt = LocalDateTime.now();
     
     @PrePersist
-    public void onCreate() {
-        if (loggedAt == null) loggedAt = LocalDateTime.now();
+    public void onCreate() { 
+        if(loggedAt == null) loggedAt = LocalDateTime.now(); 
     }
 }

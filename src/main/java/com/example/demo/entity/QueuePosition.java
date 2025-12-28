@@ -1,5 +1,4 @@
 package com.example.demo.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -15,10 +14,10 @@ public class QueuePosition {
     private Token token;
     
     private Integer position;
-    private LocalDateTime updatedAt;
+    
+    // FIX: Initialize immediately
+    private LocalDateTime updatedAt = LocalDateTime.now();
     
     @PrePersist @PreUpdate
-    public void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    public void onUpdate() { updatedAt = LocalDateTime.now(); }
 }

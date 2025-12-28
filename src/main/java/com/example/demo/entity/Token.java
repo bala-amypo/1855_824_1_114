@@ -1,5 +1,4 @@
 package com.example.demo.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -13,16 +12,17 @@ public class Token {
     
     @Column(unique = true)
     private String tokenNumber;
-    private String status; // WAITING, SERVING, COMPLETED
+    private String status; 
     
     @ManyToOne
     private ServiceCounter serviceCounter;
     
-    private LocalDateTime issuedAt;
+    // FIX: Initialize immediately to prevent NPEs in tests
+    private LocalDateTime issuedAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 
     @PrePersist
     public void onCreate() {
-        if (issuedAt == null) issuedAt = LocalDateTime.now();
+        if(issuedAt == null) issuedAt = LocalDateTime.now();
     }
 }
