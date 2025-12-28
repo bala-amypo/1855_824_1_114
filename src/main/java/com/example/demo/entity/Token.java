@@ -12,17 +12,15 @@ public class Token {
     
     @Column(unique = true)
     private String tokenNumber;
-    private String status; 
+    private String status;
     
     @ManyToOne
     private ServiceCounter serviceCounter;
     
-    // FIX: Initialize immediately to prevent NPEs in tests
+    // FIX: Init immediately to prevent NPE in tests
     private LocalDateTime issuedAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 
     @PrePersist
-    public void onCreate() {
-        if(issuedAt == null) issuedAt = LocalDateTime.now();
-    }
+    public void onCreate() { if(issuedAt == null) issuedAt = LocalDateTime.now(); }
 }

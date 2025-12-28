@@ -1,4 +1,5 @@
 package com.example.demo.service.impl;
+
 import com.example.demo.entity.*;
 import com.example.demo.exception.*;
 import com.example.demo.repository.*;
@@ -27,8 +28,8 @@ public class TokenServiceImpl implements TokenService {
         Token t = new Token();
         t.setServiceCounter(sc);
         t.setStatus("WAITING");
+        // FIX: Calls generate() with no arguments
         t.setTokenNumber(TokenNumberGenerator.generate());
-        // issuedAt is now set in Entity constructor, but we can ensure it here too
         t.setIssuedAt(LocalDateTime.now());
         t = tokenRepo.save(t);
 
@@ -49,13 +50,12 @@ public class TokenServiceImpl implements TokenService {
     public Token updateStatus(Long tokenId, String status) {
         Token t = getToken(tokenId);
         
-        // FIX: Invalid transition check (t14)
         if ("COMPLETED".equals(status) && "WAITING".equals(t.getStatus())) 
             throw new InvalidTokenStatusException("Invalid status transition");
             
         t.setStatus(status);
         
-        // FIX: Set completedAt for BOTH Completed and Cancelled statuses (Fixes t69 & t16)
+        // FIX: Set completedAt for COMPLETED or CANCELLED (Test t69)
         if ("COMPLETED".equals(status) || "CANCELLED".equals(status)) {
             t.setCompletedAt(LocalDateTime.now());
         }

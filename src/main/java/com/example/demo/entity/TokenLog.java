@@ -15,11 +15,9 @@ public class TokenLog {
     
     private String logMessage;
     
-    // FIX: Initialize immediately so it works in unit tests (t30)
+    // FIX: Init immediately (Test t30)
     private LocalDateTime loggedAt = LocalDateTime.now();
     
     @PrePersist
-    public void onCreate() { 
-        if(loggedAt == null) loggedAt = LocalDateTime.now(); 
-    }
+    public void onCreate() { if(loggedAt == null) loggedAt = LocalDateTime.now(); }
 }
