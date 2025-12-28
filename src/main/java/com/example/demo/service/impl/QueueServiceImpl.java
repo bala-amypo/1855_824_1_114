@@ -1,5 +1,4 @@
 package com.example.demo.service.impl;
-
 import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
@@ -10,33 +9,32 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class QueueServiceImpl implements QueueService {
-    private final QueuePositionRepository queueRepository;
-    private final TokenRepository tokenRepository;
+    private final QueuePositionRepository queueRepo;
+    private final TokenRepository tokenRepo;
 
     @Override
-    public QueuePosition updateQueuePosition(Long tokenId, Integer newPosition) {
-        // FIX: Test t68 requires this validation
-        if (newPosition < 1) {
-             throw new IllegalArgumentException("Position must be at least 1");
+    public QueuePosition updateQueuePosition(Long tokenId, Integer pos) {
+        // FIX: Validation required by test t68
+        if (pos < 1) {
+            throw new IllegalArgumentException("Position must be at least 1");
         }
-        
-        Token t = tokenRepository.findById(tokenId)
+
+        Token t = tokenRepo.findById(tokenId)
             .orElseThrow(() -> new ResourceNotFoundException("Token not found"));
+        
+        QueuePosition qp = queueRepo.findByToken_Id(tokenId)
+            .orElse(new QueuePosition());
             
-        // Find existing or create new (Fixes compilation logic)
-        QueuePosition qp = queueRepository.findByToken_Id(tokenId)
-                .orElse(new QueuePosition());
-        
         qp.setToken(t);
-        qp.setPosition(newPosition);
+        qp.setPosition(pos);
         
-        // FIX: Must return the saved object
-        return queueRepository.save(qp);
+        // FIX: Must return object for test t23
+        return queueRepo.save(qp);
     }
 
     @Override
     public QueuePosition getPosition(Long tokenId) {
-        return queueRepository.findByToken_Id(tokenId)
-                .orElseThrow(() -> new ResourceNotFoundException("Queue position not found"));
+        return queueRepo.findByToken_Id(tokenId)
+            .orElseThrow(() -> new ResourceNotFoundException("Queue position not found"));
     }
 }
