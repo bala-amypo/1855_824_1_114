@@ -14,25 +14,35 @@ public class JwtTokenProvider {
     private final String secret;
     private final long expiration;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") long expiration) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret, 
+                            @Value("${jwt.expiration}") long expiration) {
         this.secret = secret;
         this.expiration = expiration;
     }
+
     private Key getKey() { return Keys.hmacShaKeyFor(secret.getBytes()); }
 
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
-                .setSubject(email)
-                .addClaims(Map.of("email", email, "role", role, "userId", userId))
+                // FIX: Test t54 expects Subject to be the User ID
+                .setSubject(String.valueOf(userId)) 
+                // FIX: Test t46 expects Email as a specific claim
+                .claim("email", email)
+                .claim("role", role)
+                .claim("userId", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public boolean validateToken(String token) {
-        try { Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token); return true; } 
-        catch (Exception e) { return false; }
+        try {
+            Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) { return false; }
     }
+    
     public io.jsonwebtoken.Claims getClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
     }
