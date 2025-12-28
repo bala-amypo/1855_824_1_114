@@ -14,11 +14,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
+        // Test t9 requires duplicate email check
         Optional<User> existing = userRepository.findByEmail(user.getEmail());
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
-        // Simulate encoding for test t25 & t48 [cite: 550, 578]
+        // Test t25 requires password encoding simulation
         user.setPassword("encoded_" + user.getPassword());
         return userRepository.save(user);
     }

@@ -24,6 +24,6 @@ public class TokenLogServiceImpl implements TokenLogService {
 
     @Override
     public List<TokenLog> getLogs(Long tokenId) {
-        return logRepository.findByToken_IdOrderByLoggedAtAsc(tokenId); // Test t18 [cite: 539]
+        return logRepository.findByToken_IdOrderByLoggedAtAsc(tokenId); // Test t18
     }
 }

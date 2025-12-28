@@ -11,7 +11,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
-    // Constructor params must match test lines 505: TokenRepo, CounterRepo, LogRepo, QueueRepo
     private final TokenRepository tokenRepository;
     private final ServiceCounterRepository counterRepository;
     private final TokenLogRepository logRepository;
@@ -20,10 +19,10 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Token issueToken(Long counterId) {
         ServiceCounter sc = counterRepository.findById(counterId)
-                .orElseThrow(() -> new RuntimeException("Counter not found")); // Test t13 [cite: 528]
+                .orElseThrow(() -> new RuntimeException("Counter not found")); // Test t13
         
         if (!Boolean.TRUE.equals(sc.getIsActive())) {
-            throw new IllegalArgumentException("Counter not active"); // Test t44 [cite: 573]
+            throw new IllegalArgumentException("Counter not active"); // Test t44
         }
 
         Token t = new Token();
@@ -33,13 +32,13 @@ public class TokenServiceImpl implements TokenService {
         t.setIssuedAt(LocalDateTime.now());
         t = tokenRepository.save(t);
 
-        // Add to queue (Test t12 requires saving QueuePosition) [cite: 526]
+        // Required by Test t12 (create queue position)
         QueuePosition qp = new QueuePosition();
         qp.setToken(t);
         qp.setPosition(1); 
         queueRepository.save(qp);
 
-        // Add Log (Test t12 requires saving Log)
+        // Required by Test t12 (create log)
         TokenLog log = new TokenLog();
         log.setToken(t);
         log.setLogMessage("Issued");
@@ -53,18 +52,19 @@ public class TokenServiceImpl implements TokenService {
         Token t = tokenRepository.findById(tokenId)
                 .orElseThrow(() -> new RuntimeException("Token not found"));
 
-        // Validate transition: WAITING -> COMPLETED is invalid (Test t14) [cite: 530]
+        // Test t14: Invalid transition check
         if ("COMPLETED".equals(status) && "WAITING".equals(t.getStatus())) {
             throw new IllegalArgumentException("Invalid status transition");
         }
         
         t.setStatus(status);
         if ("COMPLETED".equals(status)) {
-            t.setCompletedAt(LocalDateTime.now()); // Test t16 [cite: 534]
+            t.setCompletedAt(LocalDateTime.now()); // Test t16
         }
         
         Token saved = tokenRepository.save(t);
         
+        // Log status change
         TokenLog log = new TokenLog();
         log.setToken(saved);
         log.setLogMessage("Status changed to " + status);
@@ -76,6 +76,6 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Token getToken(Long tokenId) {
         return tokenRepository.findById(tokenId)
-                .orElseThrow(() -> new RuntimeException("Token not found")); // Test t17 [cite: 536]
+                .orElseThrow(() -> new RuntimeException("Token not found")); // Test t17
     }
 }
