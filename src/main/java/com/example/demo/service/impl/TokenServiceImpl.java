@@ -28,7 +28,7 @@ public class TokenServiceImpl implements TokenService {
         Token t = new Token();
         t.setServiceCounter(sc);
         t.setStatus("WAITING");
-        // FIX: Calls generate() with no arguments
+        // FIX: Calls generate() with NO arguments
         t.setTokenNumber(TokenNumberGenerator.generate());
         t.setIssuedAt(LocalDateTime.now());
         t = tokenRepo.save(t);
@@ -55,7 +55,7 @@ public class TokenServiceImpl implements TokenService {
             
         t.setStatus(status);
         
-        // FIX: Set completedAt for COMPLETED or CANCELLED (Test t69)
+        // FIX: Set completedAt for BOTH COMPLETED and CANCELLED
         if ("COMPLETED".equals(status) || "CANCELLED".equals(status)) {
             t.setCompletedAt(LocalDateTime.now());
         }
