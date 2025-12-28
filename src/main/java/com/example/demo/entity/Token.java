@@ -17,7 +17,7 @@ public class Token {
     @ManyToOne
     private ServiceCounter serviceCounter;
     
-    // FIX: Init immediately to prevent NPE in tests
+    // FIX: Initialize immediately to prevent NPEs in unit tests
     private LocalDateTime issuedAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 
