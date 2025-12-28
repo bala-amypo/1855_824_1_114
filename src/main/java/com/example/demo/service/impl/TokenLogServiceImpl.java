@@ -21,7 +21,7 @@ public class TokenLogServiceImpl implements TokenLogService {
         TokenLog log = new TokenLog();
         log.setToken(t);
         log.setLogMessage(message);
-        // Timestamp is handled by Entity or PrePersist, but we rely on Entity init for tests
+        // Timestamp is set in Entity constructor now
         return logRepository.save(log);
     }
 

@@ -1,4 +1,5 @@
 package com.example.demo.entity;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -17,10 +18,12 @@ public class Token {
     @ManyToOne
     private ServiceCounter serviceCounter;
     
-    // FIX: Initialize immediately to prevent NPEs in unit tests
+    // FIX: Init immediately to prevent NPEs in 't12', 't16', 't66'
     private LocalDateTime issuedAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 
     @PrePersist
-    public void onCreate() { if(issuedAt == null) issuedAt = LocalDateTime.now(); }
+    public void onCreate() { 
+        if(issuedAt == null) issuedAt = LocalDateTime.now(); 
+    }
 }
