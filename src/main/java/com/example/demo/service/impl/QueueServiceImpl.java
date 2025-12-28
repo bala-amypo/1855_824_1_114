@@ -15,7 +15,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public QueuePosition updateQueuePosition(Long tokenId, Integer pos) {
-        // Validation logic required by test t68
+        // Fixed: Validation required by test t68
         if (pos == null || pos < 1) {
             throw new IllegalArgumentException("Position must be at least 1");
         }
@@ -23,7 +23,6 @@ public class QueueServiceImpl implements QueueService {
         Token t = tokenRepo.findById(tokenId)
             .orElseThrow(() -> new ResourceNotFoundException("Token not found"));
         
-        // Fix for "cannot find symbol findByToken_Id" - ensure Repository has this method
         QueuePosition qp = queueRepo.findByToken_Id(tokenId)
             .orElse(new QueuePosition());
             

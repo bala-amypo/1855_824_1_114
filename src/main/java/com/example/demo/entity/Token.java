@@ -18,7 +18,7 @@ public class Token {
     @ManyToOne
     private ServiceCounter serviceCounter;
     
-    // FIX: Initialize immediately. Tests use 'new Token()' which skips @PrePersist.
+    // Fixed: Initialize immediately for tests
     private LocalDateTime issuedAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 

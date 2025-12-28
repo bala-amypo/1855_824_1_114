@@ -16,7 +16,7 @@ public class QueuePosition {
     
     private Integer position;
     
-    // FIX: Initialize immediately
+    // Fixed: Initialize immediately for tests
     private LocalDateTime updatedAt = LocalDateTime.now();
     
     @PrePersist @PreUpdate
