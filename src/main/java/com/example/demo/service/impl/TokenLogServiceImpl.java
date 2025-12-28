@@ -2,25 +2,28 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import com.example.demo.service.TokenLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TokenLogServiceImpl {
-    private final TokenLogRepository logRepo;
-    private final TokenRepository tokenRepo;
+public class TokenLogServiceImpl implements TokenLogService {
+    private final TokenLogRepository logRepository;
+    private final TokenRepository tokenRepository;
 
-    public TokenLog addLog(Long tokenId, String msg) {
-        Token t = tokenRepo.findById(tokenId).orElseThrow();
+    @Override
+    public TokenLog addLog(Long tokenId, String message) {
+        Token t = tokenRepository.findById(tokenId).orElseThrow();
         TokenLog log = new TokenLog();
         log.setToken(t);
-        log.setLogMessage(msg);
-        return logRepo.save(log);
+        log.setLogMessage(message);
+        return logRepository.save(log);
     }
 
+    @Override
     public List<TokenLog> getLogs(Long tokenId) {
-        return logRepo.findByToken_IdOrderByLoggedAtAsc(tokenId);
+        return logRepository.findByToken_IdOrderByLoggedAtAsc(tokenId); // Test t18 [cite: 539]
     }
 }

@@ -2,22 +2,24 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl {
-    private final UserRepository repo;
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
 
-    public User register(User u) {
-        Optional<User> existing = repo.findByEmail(u.getEmail());
+    @Override
+    public User register(User user) {
+        Optional<User> existing = userRepository.findByEmail(user.getEmail());
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
-        // Simulate encoding
-        u.setPassword("encoded_" + u.getPassword());
-        return repo.save(u);
+        // Simulate encoding for test t25 & t48 [cite: 550, 578]
+        user.setPassword("encoded_" + user.getPassword());
+        return userRepository.save(user);
     }
 }
