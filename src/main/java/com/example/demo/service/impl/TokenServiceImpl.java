@@ -28,7 +28,7 @@ public class TokenServiceImpl implements TokenService {
         Token t = new Token();
         t.setServiceCounter(sc);
         t.setStatus("WAITING");
-        // FIX: Generates unique token
+        // FIX: Calls generate() correctly
         t.setTokenNumber(TokenNumberGenerator.generate());
         t.setIssuedAt(LocalDateTime.now());
         t = tokenRepo.save(t);
@@ -50,13 +50,12 @@ public class TokenServiceImpl implements TokenService {
     public Token updateStatus(Long tokenId, String status) {
         Token t = getToken(tokenId);
         
-        // FIX: Invalid Transition Logic (Test t14)
         if ("COMPLETED".equals(status) && "WAITING".equals(t.getStatus())) 
             throw new InvalidTokenStatusException("Invalid status transition");
             
         t.setStatus(status);
         
-        // FIX: Sets timestamp for BOTH COMPLETED and CANCELLED (Test t69)
+        // FIX: Sets timestamp for BOTH COMPLETED and CANCELLED (Fixes t69)
         if ("COMPLETED".equals(status) || "CANCELLED".equals(status)) {
             t.setCompletedAt(LocalDateTime.now());
         }
