@@ -1,29 +1,42 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tokens")
-@Data
 public class Token {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(unique = true)
     private String tokenNumber;
-    private String status;
+    
+    private String status = "WAITING";
     
     @ManyToOne
+    @JoinColumn(name = "service_counter_id")
     private ServiceCounter serviceCounter;
     
-    // FIX: Init immediately. Tests use 'new Token()' which skips @PrePersist.
     private LocalDateTime issuedAt = LocalDateTime.now();
     private LocalDateTime completedAt;
-
-    @PrePersist
-    public void onCreate() { 
-        if(issuedAt == null) issuedAt = LocalDateTime.now(); 
-    }
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getTokenNumber() { return tokenNumber; }
+    public void setTokenNumber(String tokenNumber) { this.tokenNumber = tokenNumber; }
+    
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    
+    public ServiceCounter getServiceCounter() { return serviceCounter; }
+    public void setServiceCounter(ServiceCounter serviceCounter) { this.serviceCounter = serviceCounter; }
+    
+    public LocalDateTime getIssuedAt() { return issuedAt; }
+    public void setIssuedAt(LocalDateTime issuedAt) { this.issuedAt = issuedAt; }
+    
+    public LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
 }
