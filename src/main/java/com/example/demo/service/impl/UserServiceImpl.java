@@ -14,13 +14,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
-        // FIX: Ensure user is not null for tests
         if (user == null) throw new IllegalArgumentException("User cannot be null");
-        
         if(userRepository.findByEmail(user.getEmail()).isPresent()) 
             throw new IllegalArgumentException("Email already exists");
         
         user.setPassword("encoded_" + user.getPassword());
         return userRepository.save(user);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
