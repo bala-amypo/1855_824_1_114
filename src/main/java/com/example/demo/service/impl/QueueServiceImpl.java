@@ -1,4 +1,5 @@
 package com.example.demo.service.impl;
+
 import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
@@ -14,7 +15,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public QueuePosition updateQueuePosition(Long tokenId, Integer pos) {
-        // FIX: Validation required by test t68
+        // Validation Logic (Fixes Test t68)
         if (pos < 1) {
             throw new IllegalArgumentException("Position must be at least 1");
         }
@@ -28,7 +29,6 @@ public class QueueServiceImpl implements QueueService {
         qp.setToken(t);
         qp.setPosition(pos);
         
-        // FIX: Returns the saved object
         return queueRepo.save(qp);
     }
 

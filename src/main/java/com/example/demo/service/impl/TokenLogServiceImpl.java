@@ -15,10 +15,13 @@ public class TokenLogServiceImpl implements TokenLogService {
 
     @Override
     public TokenLog addLog(Long tokenId, String message) {
-        Token t = tokenRepository.findById(tokenId).orElseThrow(() -> new RuntimeException("Token not found"));
+        Token t = tokenRepository.findById(tokenId)
+            .orElseThrow(() -> new RuntimeException("Token not found"));
+            
         TokenLog log = new TokenLog();
         log.setToken(t);
         log.setLogMessage(message);
+        // Timestamp is handled by Entity or PrePersist, but we rely on Entity init for tests
         return logRepository.save(log);
     }
 
