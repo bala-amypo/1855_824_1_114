@@ -1,24 +1,25 @@
 package com.example.demo.config;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.servers.Server; // Import this
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
-@OpenAPIDefinition(
-    info = @Info(title = "Queue System API", version = "1.0"),
-    security = @SecurityRequirement(name = "bearerAuth"),
-    // FIX: This forces Swagger to use the current protocol (HTTPS) and domain
-    servers = {@Server(url = "/", description = "Default Server URL")}
-)
-@SecurityScheme(
-    name = "bearerAuth", 
-    type = SecuritySchemeType.HTTP, 
-    scheme = "bearer", 
-    bearerFormat = "JWT"
-)
-public class OpenApiConfig {}
+public class OpenApiConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Demo API")
+                        .version("1.0")
+                        .description("Demo Spring Boot API"))
+                .servers(List.of(
+                        new Server().url("https://9067.408procr.amypo.ai/")
+                ));
+    }
+}
