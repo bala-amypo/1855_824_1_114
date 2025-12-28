@@ -16,7 +16,7 @@ public class TokenLog {
     
     private String logMessage;
     
-    // FIX: Init immediately to pass test 't30'
+    // FIX: Initialize immediately
     private LocalDateTime loggedAt = LocalDateTime.now();
     
     @PrePersist

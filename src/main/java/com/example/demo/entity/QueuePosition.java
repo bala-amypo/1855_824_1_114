@@ -16,7 +16,7 @@ public class QueuePosition {
     
     private Integer position;
     
-    // FIX: Init immediately
+    // FIX: Initialize immediately
     private LocalDateTime updatedAt = LocalDateTime.now();
     
     @PrePersist @PreUpdate
