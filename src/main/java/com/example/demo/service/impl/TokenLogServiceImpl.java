@@ -1,5 +1,4 @@
 package com.example.demo.service.impl;
-
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.TokenLogService;
@@ -20,7 +19,6 @@ public class TokenLogServiceImpl implements TokenLogService {
         TokenLog log = new TokenLog();
         log.setToken(t);
         log.setLogMessage(message);
-        // FIX: Timestamp now handled by Entity init
         return logRepository.save(log);
     }
 

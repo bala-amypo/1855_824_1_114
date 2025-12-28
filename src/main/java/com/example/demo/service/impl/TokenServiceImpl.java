@@ -1,5 +1,4 @@
 package com.example.demo.service.impl;
-
 import com.example.demo.entity.*;
 import com.example.demo.exception.*;
 import com.example.demo.repository.*;
@@ -21,14 +20,12 @@ public class TokenServiceImpl implements TokenService {
     public Token issueToken(Long counterId) {
         ServiceCounter sc = counterRepo.findById(counterId)
             .orElseThrow(() -> new ResourceNotFoundException("Counter not found"));
-        
         if (!Boolean.TRUE.equals(sc.getIsActive())) 
             throw new CounterNotActiveException("Counter not active");
 
         Token t = new Token();
         t.setServiceCounter(sc);
         t.setStatus("WAITING");
-        // FIX: Calls generate() correctly
         t.setTokenNumber(TokenNumberGenerator.generate());
         t.setIssuedAt(LocalDateTime.now());
         t = tokenRepo.save(t);
@@ -42,24 +39,18 @@ public class TokenServiceImpl implements TokenService {
         log.setToken(t);
         log.setLogMessage("Issued");
         logRepo.save(log);
-
         return t;
     }
 
     @Override
     public Token updateStatus(Long tokenId, String status) {
         Token t = getToken(tokenId);
-        
         if ("COMPLETED".equals(status) && "WAITING".equals(t.getStatus())) 
             throw new InvalidTokenStatusException("Invalid status transition");
-            
         t.setStatus(status);
-        
-        // FIX: Sets timestamp for BOTH COMPLETED and CANCELLED (Fixes t69)
         if ("COMPLETED".equals(status) || "CANCELLED".equals(status)) {
             t.setCompletedAt(LocalDateTime.now());
         }
-        
         Token saved = tokenRepo.save(t);
         TokenLog log = new TokenLog();
         log.setToken(saved);
